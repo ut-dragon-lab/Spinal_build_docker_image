@@ -3,7 +3,7 @@
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
-# Install dependencies for STM32CubeIDE
+# Install dependencies for STM32CubeIDE and ROS
 RUN apt-get update && apt-get install --no-install-recommends -y \
     build-essential \
     ca-certificates \
@@ -23,25 +23,36 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 ## add ROS Noetic Repository
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list' \
     && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
+
 ## ROS Noetic install
 RUN apt-get update && apt-get install -y \
     ros-noetic-desktop-full
+
 ## ROS path setup
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+
 ### rosdep initialization
 RUN apt-get update && apt-get install -y python3-rosdep \
     # && rm -rf /var/lib/apt/lists/* \
     && rosdep init \
     && rosdep update
+
 ## ROS build tools
 RUN apt-get update && apt-get install -y \
-    python3-catkin-tools
+    python3-catkin-tools \
+    python3-catkin-pkg \
+    python3-osrf-pycommon \
+    python3-wstool \
+    ros-cmake-modules \
+    ros-noetic-catkin
     # && rm -rf /var/lib/apt/lists/*
+
 # set bash as default shell
-SHELL ["/bin/bash", "-c"]
+# SHELL ["/bin/bash", "-c"]
 
 # source
-CMD ["bash", "-c", "source /opt/ros/noetic/setup.bash && bash"]
+# CMD ["bash", "-c", "source /opt/ros/noetic/setup.bash && bash"]
+
 ARG STM32CUBE_VERSION=1.8.0_11526_20211125_0815
 
 # Copy the installer file into the image. It needs to be downloaded into the
