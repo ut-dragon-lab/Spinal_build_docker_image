@@ -1,4 +1,4 @@
-#This is a Dockerfile to construct the environment where STM32CubeIDE project can be build.
+#This is a Dockerfile to construct the environment where ROS and STM32CubeIDE project can be build.
 # Reference: https://interrupt.memfault.com/blog/github-actions-for-stm32cubeide
 FROM ubuntu:20.04
 ENV DEBIAN_FRONTEND=noninteractive
